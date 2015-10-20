@@ -574,14 +574,37 @@ total(subtotal: 37, tax: 10, discount: 5, **options) # => 42
 
 ```ruby
 { c: 3, d: 3 }.merge(b: 2, c: 2).merge(a: 1, b: 1, d: 4)
-{ a: 1, b: 1, d: 4 }.reverse_merge(b: 2, c: 2).reverse_merge(c: 3, d: 3)
+{ a: 1, b: 1, d: 4 }
+  .reverse_merge(b: 2, c: 2)
+  .reverse_merge(c: 3, d: 3)
 # => {:c=>2, :d=>4, :b=>1, :a=>1}
 ```
---
+---
+
+# Ruby 2.1 double-splat `**`
+
+```ruby
+options = { discount: 15 }
+
+total(subtotal: 37, tax: 10, discount: 5)            # => 42
+total(subtotal: 37, tax: 10, **options, discount: 5) # => 42
+total(subtotal: 37, tax: 10, discount: 5, **options) # => 42
+```
+```ruby
+  { a: 1, b: 1,
+      **{ b: 2, c: 2 },
+            **{ c: 3, d: 3 },
+                      d: 4 }
+
+# { a: 1, b: 1, c: 2, d: 4 }
+```
 
 ```ruby
 left = -> (key, left, right) { left }
-{ a: 1, b: 1 }.merge(b: 2, c: 2, &left).merge(c: 3, d: 3, &left).merge(d: 4)
+{ a: 1, b: 1 }
+  .merge(b: 2, c: 2, &left)
+  .merge(c: 3, d: 3, &left)
+  .merge(d: 4)
 # => {:a=>1, :b=>1, :c=>2, :d=>4}
 ```
 
