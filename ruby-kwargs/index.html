@@ -484,7 +484,7 @@ foo(**{})
 # ArgumentError: wrong number of arguments (1 for 0)
 ```
 
-### Ruby 2.2.1
+### Ruby 2.2.1 and after
 
 ```ruby
 foo(**{})
@@ -707,7 +707,7 @@ end
 
 ```shell
 $ time ruby -v bench.rb
-ruby 2.1.2p95 (2014-05-08 revision 45877) [x86_64-darwin13.0]
+ruby 2.1.7p400 (2015-08-18 revision 51632) [x86_64-darwin14.0]
 
 real	0m16.233s
 ```
@@ -716,7 +716,7 @@ real	0m16.233s
 
 ```shell
 $ time ruby -v bench.rb
-ruby 2.2.3p173 (2015-08-18 revision 51636) [x86_64-darwin14]
+ruby 2.3.0p0 (2015-12-25 revision 53290) [x86_64-darwin15]
 
 real	0m1.310s
 ```
@@ -905,18 +905,32 @@ class Dispatcher
     public_send(name, **kwargs)
   end
 end
+
+Dispatcher.new.dispatch(:some, thing: 42) # works
+Dispatcher.new.dispatch(:nothing) # fails
 ```
 
---
+---
+
+# Gotchas
 
 ```ruby
 class Dispatcher
+  def nothing
+  end
+
+  def some(thing:)
+  end
+
   def dispatch(name, **kwargs)
-    args = [name]
-    args << kwargs unless kwargs.empty?
-    public_send(*args)
+*   args = [name]
+*   args << kwargs unless kwargs.empty?
+*   public_send(*args)
   end
 end
+
+Dispatcher.new.dispatch(:some, thing: 42) # works
+Dispatcher.new.dispatch(:nothing) # works
 ```
 
 ---
@@ -924,11 +938,18 @@ end
 # Thanks!
 
 ### Étienne Barrié
-#### @bihi
-#### Shopify
-## Questions?
 
-####  
+--
+
+### @bihi
+
+--
+
+### Shopify
+
+--
+
+## Questions?
 <hr />
 
 * https://robots.thoughtbot.com/ruby-2-keyword-arguments
